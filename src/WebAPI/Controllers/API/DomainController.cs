@@ -12,7 +12,7 @@ namespace WebAPI.Controllers.API
         [HttpGet]
         public ActionResult Get()
         {
-            return Ok(new { message = "nothing here yet" });
+            return Ok(new { message = "nothing new here yet" });
         }
     }
 }
