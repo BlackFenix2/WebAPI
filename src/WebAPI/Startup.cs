@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using WebAPI.Services;
+using WebAPI.Services.Impl;
 
 namespace WebAPI
 {
@@ -26,6 +28,13 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // adds Whois Service
+            services.AddScoped<IWhoisService, WhoisService>();
+            // adds Whois Service
+            services.AddScoped<IDnsService, DnsService>();
+
+            //Allow CORS
+            services.AddCors();
             services.AddControllers();
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
@@ -53,6 +62,13 @@ namespace WebAPI
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors(config =>
+            {
+                config.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+            });
 
             app.UseEndpoints(endpoints =>
             {
