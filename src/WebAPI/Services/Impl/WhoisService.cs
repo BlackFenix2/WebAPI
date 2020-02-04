@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json;
+using System;
 using System.Threading.Tasks;
 using WebAPI.Models;
 using Whois;
@@ -9,6 +8,11 @@ namespace WebAPI.Services.Impl
 {
     public class WhoisService : IWhoisService
     {
+        /// <summary>
+        /// Get basic WHOIS info
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns></returns>
         public WhoisRecord GetWhoisInfo(string domain)
         {
             //validate domain before making whois Query
@@ -47,8 +51,12 @@ namespace WebAPI.Services.Impl
 
             return record;
         }
-
-        public async Task<WhoisRecord> GetWhoisInfoAsync(string domain)
+        /// <summary>
+        /// Get detailed WHOIS info
+        /// </summary>
+        /// <param name="domain"></param>
+        /// <returns></returns>
+        public async Task<object> GetWhoisInfoDetails(string domain)
         {
             //validate domain before making whois Query
             try
@@ -59,33 +67,12 @@ namespace WebAPI.Services.Impl
             {
                 throw;
             }
-            var record = new WhoisRecord();
+
             var whoisResult = await new WhoisLookup().LookupAsync(domain);
 
-            var records = whoisResult.ParsedResponse;
+            var json = JsonConvert.SerializeObject(whoisResult.ParsedResponse, Formatting.Indented);
 
-            record.Raw = whoisResult.Content;
-            record.Domain = domain;
-            // try to populate whois record.
-            try
-            {
-                record.Created = records.Registered;
-
-                record.Expired = records.Expiration;
-
-                record.DomainStatus = records.DomainStatus;
-
-                record.Nameservers = records.NameServers;
-
-                record.Registrant.Email = records.Registrant.Email;
-                record.Admin.Email = records.AdminContact.Email;
-            }
-            catch (Exception)
-            {
-                return record;
-            }
-
-            return record;
+            return json;
         }
 
         private string Cleanse(string domain)

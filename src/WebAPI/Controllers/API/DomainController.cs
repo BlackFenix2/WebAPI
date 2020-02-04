@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 using WebAPI.Services;
 
@@ -40,6 +37,22 @@ namespace WebAPI.Controllers.API
             }
 
             return Ok(Record);
+        }
+
+        [HttpGet("{domain}/whois")]
+        public async Task<IActionResult> GetWhois(string domain)
+        {
+            object output;
+            try
+            {
+                output = await _WhoisService.GetWhoisInfoDetails(domain);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return Ok(output);
         }
     }
 }

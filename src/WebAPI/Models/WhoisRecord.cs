@@ -37,6 +37,10 @@ namespace WebAPI.Models
         /// <value>The text.</value>
         public string Raw { get; set; }
 
+
+
+
+
         /// <summary>
         /// Gets or sets the domain.
         /// </summary>
